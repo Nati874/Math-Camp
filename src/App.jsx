@@ -10,12 +10,27 @@ import Sessions from './pages/Sessions';
 import About from './pages/About';
 import Contact from './pages/Contact';
 
+// New Portal Imports
+import Register from './pages/Register';
+import ReferrerPortal from './pages/ReferrerPortal';
+import AdminPortal from './pages/AdminPortal';
+
 export default function App() {
   const [screen, setScreen] = useState('welcome'); // 'welcome' or 'app'
   const [currentPage, setCurrentPage] = useState('home'); // 'home', 'team', 'gallery', 'sessions', 'about', 'contact'
+  const [currentPath, setCurrentPath] = useState(window.location.pathname);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [modalType, setModalType] = useState(null); // 'support', 'invest' or null
+
+  // React to browser navigation and popstate updates
+  useEffect(() => {
+    const handlePopState = () => {
+      setCurrentPath(window.location.pathname);
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   // Update navbar scrolled background state
   useEffect(() => {
@@ -30,7 +45,41 @@ export default function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Welcome Screen Render
+  const isCustomRoute = ['/register', '/referrer-portal', '/admin-portal'].includes(currentPath);
+
+  // RENDER 1: Custom Portal Routes
+  if (isCustomRoute) {
+    return (
+      <div id="body">
+        <Navbar 
+          currentPage={currentPath.substring(1)} // 'register', 'referrer-portal', or 'admin-portal'
+          setCurrentPage={setCurrentPage}
+          isScrolled={isScrolled}
+          isNavOpen={isNavOpen}
+          setIsNavOpen={setIsNavOpen}
+          setModalType={setModalType}
+        />
+
+        <main style={{ minHeight: 'calc(100vh - 150px)', background: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
+          {currentPath === '/register' && <Register />}
+          {currentPath === '/referrer-portal' && <ReferrerPortal />}
+          {currentPath === '/admin-portal' && <AdminPortal />}
+        </main>
+
+        <Footer 
+          setCurrentPage={setCurrentPage}
+          setModalType={setModalType}
+        />
+
+        <InfoModal 
+          modalType={modalType}
+          setModalType={setModalType}
+        />
+      </div>
+    );
+  }
+
+  // RENDER 2: Landing Welcome Page
   if (screen === 'welcome') {
     return (
       <div className="welcome-screen-wrapper">
@@ -50,7 +99,7 @@ export default function App() {
     );
   }
 
-  // App Layout Coordination
+  // RENDER 3: Standard Page Tabs
   return (
     <div id="body">
       <Navbar 
