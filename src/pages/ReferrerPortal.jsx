@@ -26,7 +26,7 @@ export default function ReferrerPortal() {
   }, []);
 
   const loadDashboard = (referrerId) => {
-    fetch(`http://localhost:3001/api/referrer/dashboard?referrer_id=${referrerId}`)
+    fetch(`/api/referrer/dashboard?referrer_id=${referrerId}`)
       .then(res => res.json())
       .then(data => setDashboardData(data))
       .catch(err => console.warn('Failed to load dashboard data', err));
@@ -38,7 +38,7 @@ export default function ReferrerPortal() {
     setIsLoading(true);
 
     try {
-      const res = await fetch('http://localhost:3001/api/referrer/login', {
+      const res = await fetch('/api/referrer/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
@@ -69,7 +69,7 @@ export default function ReferrerPortal() {
     setReferralError('');
 
     try {
-      const res = await fetch('http://localhost:3001/api/referrer/referral', {
+      const res = await fetch('/api/referrer/referral', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

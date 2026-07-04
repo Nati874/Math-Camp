@@ -44,7 +44,7 @@ export default function Register() {
     setToken(tokenCode);
     
     // Validate token code against backend API
-    fetch(`http://localhost:3001/api/referrals/validate?token=${tokenCode}`)
+    fetch(`/api/referrals/validate?token=${tokenCode}`)
       .then(res => {
         if (!res.ok) {
           return res.json().then(data => { throw new Error(data.error || 'Token validation failed') });
@@ -65,7 +65,7 @@ export default function Register() {
       });
 
     // Load available camp sessions
-    fetch('http://localhost:3001/api/admin/sessions')
+    fetch('/api/admin/sessions')
       .then(res => res.json())
       .then(data => setSessions(data))
       .catch(err => console.warn('Failed to load sessions', err));
@@ -87,7 +87,7 @@ export default function Register() {
     setSubmitError('');
 
     try {
-      const res = await fetch('http://localhost:3001/api/register', {
+      const res = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

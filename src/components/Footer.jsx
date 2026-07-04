@@ -9,9 +9,7 @@ import {
   Award, 
   Facebook, 
   Send, 
-  Youtube,
-  Key,
-  Shield
+  Youtube
 } from 'lucide-react';
 
 export default function Footer({ setCurrentPage, setModalType }) {
@@ -78,22 +76,6 @@ export default function Footer({ setCurrentPage, setModalType }) {
               style={{ background: 'transparent', border: 'none', color: 'inherit', padding: '0', display: 'flex', width: '100%', justifyContent: 'space-between', cursor: 'pointer', fontFamily: 'inherit' }}
             >
               Awards <Award size={14} />
-            </button>
-          </li>
-          <li>
-            <button 
-              onClick={() => window.location.href = '/referrer-portal'} 
-              style={{ background: 'transparent', border: 'none', color: 'inherit', padding: '0', display: 'flex', width: '100%', justifyContent: 'space-between', cursor: 'pointer', fontFamily: 'inherit' }}
-            >
-              Referrer Portal <Key size={14} />
-            </button>
-          </li>
-          <li>
-            <button 
-              onClick={() => window.location.href = '/admin-portal'} 
-              style={{ background: 'transparent', border: 'none', color: 'inherit', padding: '0', display: 'flex', width: '100%', justifyContent: 'space-between', cursor: 'pointer', fontFamily: 'inherit' }}
-            >
-              Admin Portal <Shield size={14} />
             </button>
           </li>
         </ul>

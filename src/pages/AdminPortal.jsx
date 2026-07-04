@@ -53,23 +53,23 @@ export default function AdminPortal() {
 
   // Fetch admin analytical views
   const loadAdminData = () => {
-    fetch('http://localhost:3001/api/admin/overview')
+    fetch('/api/admin/overview')
       .then(res => res.json())
       .then(data => setOverview(data))
       .catch(err => console.warn('Failed to load overview data', err));
 
-    fetch('http://localhost:3001/api/admin/sessions')
+    fetch('/api/admin/sessions')
       .then(res => res.json())
       .then(data => setSessions(data))
       .catch(err => console.warn('Failed to load sessions list', err));
 
-    fetch('http://localhost:3001/api/admin/referrers')
+    fetch('/api/admin/referrers')
       .then(res => res.json())
       .then(data => setReferrers(data))
       .catch(err => console.warn('Failed to load referrers list', err));
 
     // Get current DB size stats by running a vacuum report
-    fetch('http://localhost:3001/api/admin/db/vacuum', { method: 'POST' })
+    fetch('/api/admin/db/vacuum', { method: 'POST' })
       .then(res => res.json())
       .then(data => setDbSize(data.sizeMB))
       .catch(err => console.warn('Failed to fetch DB size stats', err));
@@ -81,7 +81,7 @@ export default function AdminPortal() {
     setIsLoading(true);
 
     try {
-      const res = await fetch('http://localhost:3001/api/referrer/login', {
+      const res = await fetch('/api/referrer/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
@@ -120,7 +120,7 @@ export default function AdminPortal() {
     const currentSession = sessions.find(s => String(s.session_id) === String(sessionId));
     setNewCapacity(currentSession ? String(currentSession.capacity) : '');
 
-    fetch(`http://localhost:3001/api/admin/sessions/${sessionId}/roster`)
+    fetch(`/api/admin/sessions/${sessionId}/roster`)
       .then(res => res.json())
       .then(data => {
         setRoster(data);
@@ -137,7 +137,7 @@ export default function AdminPortal() {
     setCapacityMessage('');
 
     try {
-      const res = await fetch(`http://localhost:3001/api/admin/sessions/${selectedSessionId}/capacity`, {
+      const res = await fetch(`/api/admin/sessions/${selectedSessionId}/capacity`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ capacity: parseInt(newCapacity, 10) })
@@ -166,8 +166,8 @@ export default function AdminPortal() {
 
     const isEdit = editingReferrerId !== null;
     const url = isEdit 
-      ? `http://localhost:3001/api/admin/referrers/${editingReferrerId}` 
-      : 'http://localhost:3001/api/admin/referrers';
+      ? `/api/admin/referrers/${editingReferrerId}` 
+      : '/api/admin/referrers';
     const method = isEdit ? 'PUT' : 'POST';
 
     try {
@@ -216,7 +216,7 @@ export default function AdminPortal() {
     if (!window.confirm("Are you sure you want to delete this trusted referrer? All associated referral tokens will be deleted.")) return;
 
     try {
-      const res = await fetch(`http://localhost:3001/api/admin/referrers/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/admin/referrers/${id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Delete operation failed');
       loadAdminData();
     } catch (err) {
@@ -229,7 +229,7 @@ export default function AdminPortal() {
     setVacuumSuccess('');
     
     try {
-      const res = await fetch('http://localhost:3001/api/admin/db/vacuum', { method: 'POST' });
+      const res = await fetch('/api/admin/db/vacuum', { method: 'POST' });
       const data = await res.json();
       
       if (!res.ok) throw new Error(data.error || 'Vacuum operation failed');

@@ -32,27 +32,28 @@ export default function Home({ setCurrentPage }) {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Scroll reveal observer
+  // Scroll reveal observer — queries entire document so preview sections are included
   useEffect(() => {
     const timer = setTimeout(() => {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             entry.target.classList.add('reveal-visible');
+            observer.unobserve(entry.target); // stop watching once revealed
           }
         });
-      }, { threshold: 0.1 });
+      }, { threshold: 0.08 });
 
-      const elements = document.querySelectorAll('#home .reveal-hidden');
+      // Select all hidden elements inside the home page (not scoped to #home
+      // so that preview sections at the bottom are also observed)
+      const elements = document.querySelectorAll('.reveal-hidden:not(.reveal-visible)');
       elements.forEach(el => observer.observe(el));
 
-      return () => {
-        elements.forEach(el => observer.unobserve(el));
-      };
-    }, 150);
+      return () => observer.disconnect();
+    }, 100);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [cardsPerPage]); // re-run if slider count changes (new elements rendered)
 
   // Typewriter effect
   useEffect(() => {
@@ -255,6 +256,72 @@ export default function Home({ setCurrentPage }) {
             <ChevronRight size={16} />
           </button>
         </div>
+
+        {/* ── GALLERY SNEAK PEEK ── */}
+        <div className="preview-section reveal-hidden">
+          <div className="preview-section-header">
+            <h2>Gallery</h2>
+            <button onClick={() => navigateTab('gallery')}>
+              View all photos <ArrowRight size={14} />
+            </button>
+          </div>
+          <div className="gallery-preview-grid">
+            <img src="/Web Images/math camp pics/2023/photo1.jpg" alt="Camp memory 1" onClick={() => navigateTab('gallery')} />
+            <img src="/Web Images/math camp pics/2023/photo3.jpg" alt="Camp memory 2" onClick={() => navigateTab('gallery')} />
+            <img src="/Web Images/math camp pics/2023/photo5.jpg" alt="Camp memory 3" onClick={() => navigateTab('gallery')} />
+            <img src="/Web Images/math camp pics/2023/photo7.jpg" alt="Camp memory 4" onClick={() => navigateTab('gallery')} />
+            <img src="/Web Images/math camp pics/2023/photo8.jpg" alt="Camp memory 5" onClick={() => navigateTab('gallery')} />
+          </div>
+        </div>
+
+        {/* ── TEAM SNEAK PEEK ── */}
+        <div className="preview-section reveal-hidden">
+          <div className="preview-section-header">
+            <h2>Meet Our Team</h2>
+            <button onClick={() => navigateTab('team')}>
+              View full team <ArrowRight size={14} />
+            </button>
+          </div>
+          <div className="team-preview-strip">
+            {[
+              { name: "Dr. Getachew Mehabie", role: "Head of Mathematics", img: "/Web Images/Capture.JPG" },
+              { name: "Solomon Haile", role: "Lead Physics Instructor", img: "/Web Images/Capture.JPG" },
+              { name: "Abebe Kebede", role: "Senior Facilitator", img: "/Web Images/Capture.JPG" },
+            ].map((member, idx) => (
+              <div key={idx} className="team-preview-card" onClick={() => navigateTab('team')} style={{ cursor: 'pointer' }}>
+                <img src={member.img} alt={member.name} />
+                <h4>{member.name}</h4>
+                <p>{member.role}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── SESSIONS SNEAK PEEK ── */}
+        <div className="preview-section reveal-hidden" style={{ marginBottom: '80px' }}>
+          <div className="preview-section-header">
+            <h2>Our Sessions</h2>
+            <button onClick={() => navigateTab('sessions')}>
+              See full curriculum <ArrowRight size={14} />
+            </button>
+          </div>
+          <div className="sessions-preview-strip">
+            {[
+              { title: "Advanced Algebra & Logic", desc: "Dive deep into algebraic structures, matrices, and proofs that power modern computation.", img: "/Web Images/math camp pics/algorithm0.jpg" },
+              { title: "Number Theory & Cryptography", desc: "Explore prime numbers, modular arithmetic, and the secrets behind modern encryption.", img: "/Web Images/math camp pics/physics0.jpg" },
+              { title: "CS & Coding Outreach", desc: "Translate mathematical ideas into real algorithms and Python programs.", img: "/Web Images/math camp pics/algorithm1.jpg" },
+            ].map((session, idx) => (
+              <div key={idx} className="session-preview-card" onClick={() => navigateTab('sessions')}>
+                <img src={session.img} alt={session.title} />
+                <div className="session-preview-card-body">
+                  <h4>{session.title}</h4>
+                  <p>{session.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
       </div>
     </>
   );
