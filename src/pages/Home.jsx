@@ -5,6 +5,7 @@ import {
   Users, 
   ChevronRight, 
   ChevronLeft, 
+  ChevronDown,
   ArrowRight 
 } from 'lucide-react';
 
@@ -15,6 +16,154 @@ export default function Home({ setCurrentPage }) {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [cardsPerPage, setCardsPerPage] = useState(3);
   const sliderRef = useRef(null);
+  const canvasRef = useRef(null);
+
+  // Hero canvas particle network animation
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    
+    let animationFrameId;
+    let particles = [];
+    const particleCount = window.innerWidth < 768 ? 42 : 90;
+    const connectionDistance = 110;
+    const mouseConnectionDistance = 160;
+    
+    let mouse = { x: null, y: null, radius: 165 };
+
+    const resizeCanvas = () => {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+    };
+    
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.vx = (Math.random() - 0.5) * 0.8;
+        this.vy = (Math.random() - 0.5) * 0.8;
+        this.radius = Math.random() * 2 + 1.2;
+      }
+      
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+
+        if (this.x < 0) {
+          this.x = 0;
+          this.vx *= -1;
+        } else if (this.x > canvas.width) {
+          this.x = canvas.width;
+          this.vx *= -1;
+        }
+
+        if (this.y < 0) {
+          this.y = 0;
+          this.vy *= -1;
+        } else if (this.y > canvas.height) {
+          this.y = canvas.height;
+          this.vy *= -1;
+        }
+
+        // Gentle physical push away when mouse is near
+        if (mouse.x !== null && mouse.y !== null) {
+          const dx = this.x - mouse.x;
+          const dy = this.y - mouse.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < mouse.radius) {
+            const force = (mouse.radius - dist) / mouse.radius;
+            this.x += (dx / dist) * force * 1.5;
+            this.y += (dy / dist) * force * 1.5;
+          }
+        }
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+        ctx.fill();
+      }
+    }
+
+    for (let i = 0; i < particleCount; i++) {
+      particles.push(new Particle());
+    }
+
+    const handleMouseMove = (e) => {
+      const rect = canvas.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
+    };
+
+    const handleMouseLeave = () => {
+      mouse.x = null;
+      mouse.y = null;
+    };
+
+    const parent = canvas.parentElement;
+    parent.addEventListener('mousemove', handleMouseMove);
+    parent.addEventListener('mouseleave', handleMouseLeave);
+
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = 0; i < particles.length; i++) {
+        const p1 = particles[i];
+        p1.update();
+        p1.draw();
+
+        for (let j = i + 1; j < particles.length; j++) {
+          const p2 = particles[j];
+          const dx = p1.x - p2.x;
+          const dy = p1.y - p2.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < connectionDistance) {
+            const alpha = ((connectionDistance - dist) / connectionDistance) * 0.18;
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
+            ctx.lineWidth = 0.7;
+            ctx.stroke();
+          }
+        }
+
+        if (mouse.x !== null && mouse.y !== null) {
+          const dx = p1.x - mouse.x;
+          const dy = p1.y - mouse.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < mouseConnectionDistance) {
+            const alpha = ((mouseConnectionDistance - dist) / mouseConnectionDistance) * 0.3;
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(mouse.x, mouse.y);
+            ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
+            ctx.lineWidth = 0.9;
+            ctx.stroke();
+          }
+        }
+      }
+
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animate();
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener('resize', resizeCanvas);
+      parent.removeEventListener('mousemove', handleMouseMove);
+      parent.removeEventListener('mouseleave', handleMouseLeave);
+    };
+  }, []);
+
 
   // Monitor screen dimensions for responsive slider count
   useEffect(() => {
@@ -155,8 +304,10 @@ export default function Home({ setCurrentPage }) {
 
   return (
     <>
-      <div id="header">
-        <div className="hero-overlay">
+      <div id="header" style={{ position: 'relative' }}>
+        <div className="hero-bg-overlay" />
+        <canvas ref={canvasRef} className="hero-particles" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 2 }} />
+        <div className="hero-overlay" style={{ position: 'relative', zIndex: 3 }}>
           <h3 className="welcome-label">Welcome</h3>
           <div className="welcome-divider-home"></div>
           <h1 className="hero-title">Bahir Dar University Math Camp</h1>
@@ -166,7 +317,7 @@ export default function Home({ setCurrentPage }) {
         </div>
         <div className="scroll-down-indicator">
           <span>Scroll Down</span>
-          <ChevronRight size={16} className="bouncing" style={{ transform: 'rotate(90deg)' }} />
+          <ChevronDown size={16} className="bouncing" />
         </div>
       </div>
 
@@ -284,9 +435,9 @@ export default function Home({ setCurrentPage }) {
           </div>
           <div className="team-preview-strip">
             {[
-              { name: "Dr. Getachew Mehabie", role: "Head of Mathematics", img: "/Web Images/Capture.JPG" },
-              { name: "Solomon Haile", role: "Lead Physics Instructor", img: "/Web Images/Capture.JPG" },
-              { name: "Abebe Kebede", role: "Senior Facilitator", img: "/Web Images/Capture.JPG" },
+              { name: "Dr. Getachew Mehabie", role: "Head of Mathematics", img: "/Web Images/default-avatar.svg" },
+              { name: "Solomon Haile", role: "Lead Physics Instructor", img: "/Web Images/default-avatar.svg" },
+              { name: "Abebe Kebede", role: "Senior Facilitator", img: "/Web Images/default-avatar.svg" },
             ].map((member, idx) => (
               <div key={idx} className="team-preview-card" onClick={() => navigateTab('team')} style={{ cursor: 'pointer' }}>
                 <img src={member.img} alt={member.name} />

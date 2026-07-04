@@ -14,6 +14,16 @@ import {
 
 export default function Footer({ setCurrentPage, setModalType }) {
   const navigateTab = (page) => {
+    if (page === 'about') {
+      window.history.pushState({}, '', '/about');
+      window.dispatchEvent(new Event('popstate'));
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      return;
+    }
+    if (window.location.pathname !== '/') {
+      window.history.pushState({}, '', '/');
+      window.dispatchEvent(new Event('popstate'));
+    }
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
@@ -24,7 +34,11 @@ export default function Footer({ setCurrentPage, setModalType }) {
         <ul>
           <li>
             <button 
-              onClick={() => navigateTab('about')} 
+              onClick={() => {
+                window.history.pushState({}, '', '/history');
+                window.dispatchEvent(new Event('popstate'));
+                window.scrollTo({ top: 0, behavior: 'instant' });
+              }}
               style={{ background: 'transparent', border: 'none', color: 'inherit', padding: '0', display: 'flex', width: '100%', justifyContent: 'space-between', cursor: 'pointer', fontFamily: 'inherit' }}
             >
               Camp History <School size={14} />

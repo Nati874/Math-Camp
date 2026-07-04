@@ -23,6 +23,13 @@ export default function Navbar({
   const showStickySolid = currentPage !== 'home' || isScrolled;
 
   const navigateTab = (page) => {
+    if (page === 'about') {
+      window.history.pushState({}, '', '/about');
+      window.dispatchEvent(new Event('popstate'));
+      setIsNavOpen(false);
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      return;
+    }
     if (window.location.pathname !== '/') {
       window.history.pushState({}, '', '/');
       window.dispatchEvent(new Event('popstate'));

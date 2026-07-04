@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="100" fill="#E8E8E8"/>
+  <!-- Body / torso -->
+  <ellipse cx="100" cy="155" rx="52" ry="38" fill="#BDBDBD"/>
+  <!-- Head -->
+  <circle cx="100" cy="82" r="36" fill="#BDBDBD"/>
+</svg>

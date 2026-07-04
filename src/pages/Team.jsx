@@ -26,12 +26,12 @@ export default function Team() {
   }, [activeFilter]);
 
   const teamMembers = [
-    { name: "Dr. Getachew Mehabie", role: "Head of Mathematics Department", bio: "Dr. Getachew is the head of the Department of Mathematics at Bahir Dar University, leading academic and outreach initiatives.", img: "/Web Images/Capture.JPG", category: "math" },
-    { name: "Dr. Seyoum Getahun", role: "Math Camp Coordinator", bio: "Associate Professor of Mathematics with a passion for cultivating young logical minds and advanced problem solving.", img: "/Web Images/Capture.JPG", category: "math" },
-    { name: "Solomon Haile", role: "Lead Physics Instructor", bio: "Senior lecturer in thermodynamics and astrophysics, bringing experimental physics projects to camp sessions.", img: "/Web Images/Capture.JPG", category: "physics" },
-    { name: "Abebe Kebede", role: "Senior Student Facilitator", bio: "Math Camp alumnus and current BDU computer science major, returning to mentor the next generation of campers.", img: "/Web Images/Capture.JPG", category: "facilitators" },
-    { name: "Selamawit Tadesse", role: "Facilitator & Tutor", bio: "Graduate assistant specializing in abstract algebra, providing personalized study guides for camp participants.", img: "/Web Images/Capture.JPG", category: "facilitators" },
-    { name: "Prof. Rebecca Davis", role: "International Advisor", bio: "Distinguished researcher in algebraic geometry, visiting lecturer from the International Science Program.", img: "/Web Images/Capture.JPG", category: "mentors" },
+    { name: "Dr. Getachew Mehabie", role: "Head of Mathematics Department", bio: "Dr. Getachew is the head of the Department of Mathematics at Bahir Dar University, leading academic and outreach initiatives.", img: "/Web Images/default-avatar.svg", category: "math" },
+    { name: "Dr. Seyoum Getahun", role: "Math Camp Coordinator", bio: "Associate Professor of Mathematics with a passion for cultivating young logical minds and advanced problem solving.", img: "/Web Images/default-avatar.svg", category: "math" },
+    { name: "Solomon Haile", role: "Lead Physics Instructor", bio: "Senior lecturer in thermodynamics and astrophysics, bringing experimental physics projects to camp sessions.", img: "/Web Images/default-avatar.svg", category: "physics" },
+    { name: "Abebe Kebede", role: "Senior Student Facilitator", bio: "Math Camp alumnus and current BDU computer science major, returning to mentor the next generation of campers.", img: "/Web Images/default-avatar.svg", category: "facilitators" },
+    { name: "Selamawit Tadesse", role: "Facilitator & Tutor", bio: "Graduate assistant specializing in abstract algebra, providing personalized study guides for camp participants.", img: "/Web Images/default-avatar.svg", category: "facilitators" },
+    { name: "Prof. Rebecca Davis", role: "International Advisor", bio: "Distinguished researcher in algebraic geometry, visiting lecturer from the International Science Program.", img: "/Web Images/default-avatar.svg", category: "mentors" },
   ];
 
   const filteredTeam = activeFilter === 'all' 

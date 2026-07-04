@@ -14,6 +14,7 @@ import Contact from './pages/Contact';
 import Register from './pages/Register';
 import ReferrerPortal from './pages/ReferrerPortal';
 import AdminPortal from './pages/AdminPortal';
+import History from './pages/History';
 
 export default function App() {
   const [screen, setScreen] = useState('welcome'); // 'welcome' or 'app'
@@ -45,14 +46,14 @@ export default function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const isCustomRoute = ['/register', '/referrer-portal', '/admin-portal'].includes(currentPath);
+  const isCustomRoute = ['/register', '/referrer-portal', '/admin-portal', '/history', '/about'].includes(currentPath);
 
   // RENDER 1: Custom Portal Routes
   if (isCustomRoute) {
     return (
       <div id="body">
         <Navbar 
-          currentPage={currentPath.substring(1)} // 'register', 'referrer-portal', or 'admin-portal'
+          currentPage={currentPath === '/history' ? 'history' : (currentPath === '/about' ? 'about' : currentPath.substring(1))} 
           setCurrentPage={setCurrentPage}
           isScrolled={isScrolled}
           isNavOpen={isNavOpen}
@@ -64,6 +65,8 @@ export default function App() {
           {currentPath === '/register' && <Register />}
           {currentPath === '/referrer-portal' && <ReferrerPortal />}
           {currentPath === '/admin-portal' && <AdminPortal />}
+          {currentPath === '/history' && <History />}
+          {currentPath === '/about' && <About />}
         </main>
 
         <Footer 
@@ -116,7 +119,6 @@ export default function App() {
         {currentPage === 'team' && <Team />}
         {currentPage === 'gallery' && <Gallery />}
         {currentPage === 'sessions' && <Sessions />}
-        {currentPage === 'about' && <About />}
         {currentPage === 'contact' && <Contact />}
       </main>
 
